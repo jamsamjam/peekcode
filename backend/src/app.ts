@@ -10,13 +10,13 @@ app.use(cors({
     origin: process.env.FRONTEND_URL,
   }));
 
-import userRouter from './routes/auth.route.ts';
+import authRouter from './routes/auth.route.js';
 import problemRouter from './routes/problem.route.js';
-import authenticateToken from "./middlewares/auth.middleware.ts";
+import userRouter from './routes/user.route.js';
+import authenticateToken from "./middlewares/auth.middleware.js";
 
-app.use("/api/v1/users", userRouter);
+app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/problems", authenticateToken, problemRouter);
-
-// api/vi/users/register
+app.use("/api/v1/users", authenticateToken, userRouter);
 
 export default app;
