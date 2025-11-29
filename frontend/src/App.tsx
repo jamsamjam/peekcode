@@ -12,7 +12,7 @@ function App() {
     const formElement = event.currentTarget;
     const formData = new FormData(formElement);
 
-    const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/v1/users/register`, {
+    const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/v1/auth/register`, {
       method: 'POST',
       body: JSON.stringify({
         email: formData.get('email'), // could be just formData ?
@@ -23,7 +23,13 @@ function App() {
     });
 
     if (!response.ok) {
-      alert('Failed to register! Please try again.');
+      const data = await response.json().catch(() => null);
+
+      if (data && data.message) {
+        alert(data.message);
+      } else {
+        alert('Failed to register! Please try again.');
+      }
       return;
     }
   }
@@ -35,7 +41,7 @@ function App() {
     const formElement = event.currentTarget;
     const formData = new FormData(formElement);
 
-    const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/v1/users/login`, {
+    const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/v1/auth/login`, {
       method: 'POST',
       body: JSON.stringify({
         email: formData.get('email'),
