@@ -2,6 +2,11 @@ import { model, Schema } from "mongoose"; // schema = structure
 
 const problemSchema = new Schema(
     {
+        owner: {
+            type: Schema.Types.ObjectId,
+            ref: 'User'
+        },
+
         title: {
             type: String,
             required: true,

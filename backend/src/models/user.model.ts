@@ -31,7 +31,12 @@ const userSchema = new Schema(
 
         loggedIn: {
             type: Boolean,
-        }
+        },
+
+        problems: [{
+            type: Schema.Types.ObjectId,
+            ref: 'Problem'
+        }]
     },
 
     {
