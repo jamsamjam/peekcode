@@ -9,15 +9,15 @@ const userSchema = new Schema(
             unique: true,
             lowercase: true,
             trim: true,
-            minLength: 3,
-            maxLength: 20,
+            minLength: [3, "Username must be at least 3 characters long."],
+            maxLength: [20, "Username can't exceed 20 characters."],
         },
 
         password: {
             type: String,
             required: true,
-            minLength: 6,
-            maxLength: 30,
+            minLength: [6, "Password must be at least 6 characters long."],
+            maxLength: [30, "Password can't exceed 30 characters."],
         },
 
         email: {

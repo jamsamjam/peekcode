@@ -47,5 +47,6 @@
 		"resolveJsonModule": true,
     "noEmit": true,
     "allowImportingTsExtensions": true
-  }
+  },
+  "include": ["src", "types"]
 }

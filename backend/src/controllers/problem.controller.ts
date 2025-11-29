@@ -1,5 +1,6 @@
 import { postMessageToThread } from "worker_threads";
 import { Problem } from "../models/problem.model.ts";
+import { User } from "../models/user.model.ts";
 import type { Request, Response } from "express";
 
 const createProblem = async (req: Request, res: Response) => {
@@ -24,6 +25,11 @@ const createProblem = async (req: Request, res: Response) => {
             notes: body.notes,
             dependency: body.dependency,
         });
+
+        await User.findByIdAndUpdate(
+            req.user!._id,
+            { $push: { problems: problem._id } }
+        );
 
         res.status(201).json({
             message: "Problem created successfully", problem
