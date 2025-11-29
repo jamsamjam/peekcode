@@ -39,11 +39,10 @@ const userSchema = new Schema(
     }
 )
 
-// hash password
-userSchema.pre('save', async function (next: any) {
-    if (!this.isModified('password')) return next();
+// hash password, apparently next() is gone
+userSchema.pre('save', async function () {
+    if (!this.isModified('password')) return;
     this.password = await bcrypt.hash(this.password, 10);
-    next();
 });
 
 // compare passwords

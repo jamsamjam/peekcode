@@ -3,7 +3,11 @@ import type { Request, Response } from "express";
 
 const registerUser = async (req: Request, res: Response) => { // decision maker, handle requests
     try {
-        const { username, email, password } = req.body;
+        const { username, email, password } = req.body as {
+            username: string|null,
+            email: string|null,
+            password: string|null
+        };
 
         // basic validation
         if (!username || !email || !password) {
@@ -36,9 +40,14 @@ const registerUser = async (req: Request, res: Response) => { // decision maker,
 const loginUser = async (req: Request, res: Response) => {
     try {
         // check if the user already exists
-        const { email, password } = req.body;
+        const { email, password } = req.body as {
+            email: string|null,
+            password: string|null
+        };
 
-        const user = await User.findOne({ email: email.toLowercase() });
+        if (!email) return res.status(400).json({ message: "Email not provided" });
+
+        const user = await User.findOne({ email: email.toLowerCase() });
         if (!user) return res.status(400).json({ message: "User not found" });
 
         // compare password
@@ -54,6 +63,7 @@ const loginUser = async (req: Request, res: Response) => {
             }
         })
     } catch (error) {
+        console.error(error);
         res.status(500).json({
             message: "Internal Server Error"
         })
