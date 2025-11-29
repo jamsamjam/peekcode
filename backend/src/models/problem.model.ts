@@ -1,4 +1,4 @@
-import mongoose, { Schema } from "mongoose"; // schema = structure
+import { model, Schema } from "mongoose"; // schema = structure
 
 const problemSchema = new Schema(
     {
@@ -24,11 +24,16 @@ const problemSchema = new Schema(
         status: {
             type: String,
             enum: ["Solved", "Attempted", "ReviewNeeded", "Skipped"],
+            required: true,
             default: "Solved",
         },
 
-        date: Date,
-        timeSpent: Number,
+        date: {
+            type: Date,
+            default: Date.now,
+        },
+
+        timeSpent: Number, // in mins
 
         tags: [String],
 
@@ -48,4 +53,4 @@ const problemSchema = new Schema(
     }
 )
 
-export const Problem = mongoose.model("Problem", problemSchema)
+export const Problem = model("Problem", problemSchema)
