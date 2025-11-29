@@ -83,44 +83,45 @@ function App() {
   }
 
   return (
-    <>
-      <h1>PeekCode</h1>
-      {!jwt && (
-        !hasAccount ? (
-          <form onSubmit={handleRegister}>
-            <label htmlFor="email">Email: </label>
-            <input type="email" id="email" name="email" /><br/>
-            <label htmlFor="password">Password: </label>
-            <input type="password" id="password" name="password" /><br/>
-            <label htmlFor="username">Username: </label>
-            <input type="text" id="username" name="username" /><br/><br/>
-            <button>Sign Up</button><br/>
-            <button className="textButton" onClick={() => setHasAccount(true)}>I have an account.</button>
-          </form>) : (
-          <form onSubmit={handleLogin}>
-            <label htmlFor="email">Email: </label>
-            <input type="email" id="email" name="email" /><br/>
-            <label htmlFor="password">Password: </label>
-            <input type="password" id="password" name="password" /><br/><br/>
-            <button>Log In</button><br/>
-            <button className="textButton" onClick={() => setHasAccount(true)}>Actually, I don't have one yet.</button>
-          </form>
-        )
-      )}
+    <div className="container">
+      <div className="col-12 col-lg-3 p-3">
+        <h1>PeekCode</h1>
+        {!jwt && (
+          !hasAccount ? (
+            <form onSubmit={handleRegister}>
+              <label className="form-label" htmlFor="email">Email</label>
+              <input type="email" className="form-control" id="email" name="email" />
+              <label className="form-label" htmlFor="password">Password</label>
+              <input type="password" className="form-control" id="password" name="password" />
+              <label className="form-label" htmlFor="username">Username</label>
+              <input type="text" className="form-control" id="username" name="username" /><br/>
+              <button className="btn btn-outline-secondary">Sign Up</button><br/>
+              <button className="textButton" onClick={() => setHasAccount(true)}>I already have an account.</button>
+            </form>) : (
+            <form onSubmit={handleLogin}>
+              <label className="form-label" htmlFor="email">Email</label>
+              <input type="email" className="form-control" id="email" name="email" />
+              <label className="form-label" htmlFor="password">Password</label>
+              <input type="password" className="form-control" id="password" name="password" /><br/>
+              <button className="btn btn-outline-secondary">Log In</button><br/>
+              <button className="textButton" onClick={() => setHasAccount(true)}>Actually, I don't have one yet.</button>
+            </form>
+          )
+        )}
 
-      {jwt && (
-        <>
-          <h2>My Problems</h2>
-          {problems.length === 0 ? (
-            <p>No problems found</p>
-          ) : (
-            <></>
-          )}
-        </>
-      )}
-
-
-    </>
+        {jwt && (
+          <>
+            <h2>My Problems</h2>
+            <button className="btn btn-outline-secondary" onClick={() => setToken(null)}>Log Out</button><br/>
+            {problems.length === 0 ? (
+              <p>No problems found</p>
+            ) : (
+              <></>
+            )}
+          </>
+        )}
+      </div>
+    </div>
   )
 }
 

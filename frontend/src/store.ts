@@ -4,7 +4,7 @@ import { persist } from 'easy-peasy';
 
 interface PeekCodeStore {
     jwt: string|null,
-    setToken: Action<PeekCodeStore, string>
+    setToken: Action<PeekCodeStore, string|null>
 }
 
 export const store = createStore<PeekCodeStore>(
