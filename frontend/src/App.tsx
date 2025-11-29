@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from 'react'
-import './App.css'
 import { useStoreActions, useStoreState } from './store';
+import './App.css'
 
 function App() {
   const [hasAccount, setHasAccount] = useState(false);
