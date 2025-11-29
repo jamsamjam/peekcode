@@ -1,6 +1,6 @@
 import dotenv from "dotenv";
 import app from "./app.ts";
-import connectDB from "./config/database.ts";
+import connectDB from "./config/database.js";
 
 dotenv.config({
     path: './.env'

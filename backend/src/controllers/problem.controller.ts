@@ -1,6 +1,6 @@
 import { postMessageToThread } from "worker_threads";
-import { Problem } from "../models/problem.model.ts";
-import { User } from "../models/user.model.ts";
+import { Problem } from "../models/problem.model.js";
+import { User } from "../models/user.model.js";
 import type { Request, Response } from "express";
 
 const createProblem = async (req: Request, res: Response) => {
