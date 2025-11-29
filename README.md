@@ -1,1 +1,3 @@
+# PeekCode
+
 A simple web app to help coding test preparation.
