@@ -118,6 +118,67 @@ function App() {
             ) : (
               <></>
             )}
+
+            <form onSubmit={createProblem}>
+              <label className="form-label" htmlFor="title">Title</label>
+              <input type="text" className="form-control" id="title" name="title" />
+              <label className="form-label" htmlFor="url">URL</label>
+              <input type="text" className="form-control" id="url" name="url" />
+              <label className="form-label" htmlFor="difficulty">Difficulty</label>
+              <select className="form-select" aria-label="difficulty">
+                <option selected></option>
+                <option value="1">Easy</option>
+                <option value="2">Medium</option>
+                <option value="3">Hard</option>
+              </select>
+              <label className="form-label" htmlFor="status">Status</label>
+              <select className="form-select" aria-label="status">
+                <option selected>Solved</option>
+                <option value="1">Attempted</option>
+                <option value="2">Review Needed</option>
+                <option value="3">Skipped</option>
+              </select>
+              <label className="form-label" htmlFor="date">Date</label>
+              <input type="date" className="form-control"></input>
+              <label className="form-label" htmlFor="timeSpent">Time Spent</label>
+              <input type="number" className="form-control" id="timeSpent" name="timeSpent" min="0" />
+              <label className="form-label" htmlFor="tags">Tags</label>
+              <div className="App">
+                <CreatableSelect
+                  isMulti
+                  placeholder=''
+                  noOptionsMessage={() => 'Type to Create'}
+                  options={options}
+                  styles={{
+                    control: (base) => ({
+                      ...base,
+                      backgroundColor: 'var(--bs-body-bg)',
+                      color: 'var(--bs-body-color)',
+                      border: 'var(--bs-border-width) solid var(--bs-border-color)',
+                      borderRadius: 'var(--bs-border-radius)',
+                    }),
+                    input: (base) => ({
+                      ...base,
+                      color: "var(--bs-body-color)"
+                    }),
+                    menu: (base) => ({
+                      ...base,
+                      backgroundColor: "var(--bs-body-bg)",
+                      border: `var(--bs-border-width) solid var(--bs-border-color)`
+                    }),
+                    menuList: (base) => ({
+                      ...base,
+                      backgroundColor: "var(--bs-body-bg)"
+                    }),
+                  }}
+                />
+              </div>
+              <label className="form-label" htmlFor="notes">Notes</label>
+              <input type="text" className="form-control" id="notes" name="notes" />
+              <label className="form-label" htmlFor="dependency">Dependency</label>
+              <input type="range" className="form-range" min="0" max="100" id="dependency"></input>
+              <button type="submit" className="btn btn-outline-light">Submit</button><br/>
+            </form>
           </>
         )}
       </div>
