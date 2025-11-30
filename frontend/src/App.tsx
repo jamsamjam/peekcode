@@ -133,7 +133,7 @@ function App() {
 
   return (
     <div className="container">
-      <div className="col-12 col-lg-3 p-3">
+      <div className="">
         <h1>PeekCode</h1>
         {!jwt && (
           !hasAccount ? (
@@ -161,15 +161,51 @@ function App() {
         {jwt && (
           <>
             <button className="btn btn-outline-secondary" onClick={() => setToken(null)}>Log Out</button><br/><br/>
-            <button type="button" className="btn btn-outline-primary">Add</button> 
-            <button type="button" className="btn btn-outline-danger">Delete</button><br/><br/>
+            <div>
+              <button type="button" className="btn btn-outline-primary">Add</button>
+              <button type="button" className="btn btn-outline-warning">Edit</button>
+              <button type="button" className="btn btn-outline-danger">Delete</button><br/><br/>
+            </div>
 
             {problems.length === 0 ? (
               <p>Ready to Start?</p>
             ) : (
-              <div>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', justifyContent: 'flex-start' }}>
                 {problems.map(problem => (
-                  <>{problem.title}</>
+                  <div className="card" style={{ width: '18rem' }}>
+                    <div className="card-body">
+                      <a href={problem.url!} style={{ textDecoration: 'none', color: 'inherit' }}>
+                        <h5 className="card-title">{problem.title}</h5>
+                      </a>
+
+                      <div className="d-flex justify-content-between align-items-center">
+                        <p className="card-subtitle text-muted m-0">{new Date(problem.date).toLocaleDateString()}</p>
+
+                        <p className="card-subtitle text-muted m-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-clock" viewBox="0 0 16 16">
+                          <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71z"/>
+                          <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16m7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0"/>
+                        </svg>
+                        {" "}{problem.timeSpent} min</p>
+                      </div>
+
+                      <p className="badge bg-secondary">{problem.difficulty}</p>
+
+                      <p className="card-text small text-muted mb-1">
+                        {problem.status}
+                      </p>
+
+                      {problem.notes && (
+                        <p className="card-text mt-2">{problem.notes}</p>
+                      )}
+
+                      {problem.tags && problem.tags.length > 0 && (
+                        <div className="mt-2">
+                          <span className="text-muted small">{problem.tags.join(", ")}</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
                 ))}
               </div>
             )}
