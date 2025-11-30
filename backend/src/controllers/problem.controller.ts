@@ -7,7 +7,7 @@ const createProblem = async (req: Request, res: Response) => {
     try {
         const body = req.body;
 
-        if (!body.title || !body.platform || !body.difficulty || !body.status) {
+        if (!body.title || !body.difficulty || !body.status) {
             return res.status(400).json({
                 message: "All fields are required."
             })
@@ -15,7 +15,6 @@ const createProblem = async (req: Request, res: Response) => {
 
         const problem = await Problem.create({ // exclude what they can't put themselves
             title: body.title,
-            platform: body.platform,
             url: body.url,
             difficulty: body.difficulty,
             status: body.status,
@@ -65,7 +64,6 @@ const updateProblem = async (req: Request, res: Response) => {
 
         const problem = await Problem.findByIdAndUpdate(req.params.id, {
             title: body.title,
-            platform: body.platform,
             url: body.url,
             difficulty: body.difficulty,
             status: body.status,

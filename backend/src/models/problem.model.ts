@@ -12,12 +12,6 @@ const problemSchema = new Schema(
             required: true,
         },
 
-        platform: {
-            type: String ,
-            enum: ["LeetCode", "NeetCode", "etc"],
-            required: true,
-        },
-
         url: String,
 
         difficulty: {
