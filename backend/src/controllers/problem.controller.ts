@@ -14,6 +14,7 @@ const createProblem = async (req: Request, res: Response) => {
         }
 
         const problem = await Problem.create({ // exclude what they can't put themselves
+            owner: req.user!._id,
             title: body.title,
             url: body.url,
             difficulty: body.difficulty,
