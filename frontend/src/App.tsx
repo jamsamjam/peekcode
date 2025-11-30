@@ -1,16 +1,19 @@
 import { useEffect, useState, useCallback, type FormEvent } from 'react'
 import { useStoreActions, useStoreState } from './store';
 import './App.css'
-import CreatableSelect from 'react-select/creatable';
 import type { ProblemType } from '@backend/models/problem.model'
+import ProblemForm from './components/ProblemForm';
 
 function App() {
   const [hasAccount, setHasAccount] = useState(false);
   const [problems, setProblems] = useState<ProblemType[]>([]);
   const jwt = useStoreState((state) => state.jwt);
   const setToken = useStoreActions((actions) => actions.setToken);
+
   const [tags] = useState([]);
   const [selectedTags, setSelectedTags] = useState<Array<{ value: string, label: string }>>([]);
+  const [showForm, setShowForm] = useState(false);
+  const [editingProblem, setEditingProblem] = useState<ProblemType|null>(null);
 
   const handleRegister = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -131,10 +134,48 @@ function App() {
     getProblems();
   }
 
+  const editProblem = async (event: FormEvent<HTMLFormElement>, problemId: string) => {
+    event.preventDefault();
+
+    const formElement = event.currentTarget;
+    const formData = new FormData(formElement);
+
+    const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/v1/problems/update/${problemId}`, {
+      method: 'PATCH',
+      body: JSON.stringify({
+        title: formData.get('title'),
+        url: formData.get('url'),
+        difficulty: formData.get('difficulty'),
+        status: formData.get('status'),
+        date: formData.get('date'),
+        timeSpent: formData.get('timeSpent'),
+        tags: selectedTags.map(tag => tag.value),
+        notes: formData.get('notes'),
+        dependency: formData.get('dependency')
+      }),
+      headers: { 
+        'Authorization': `Bearer ${jwt!}`,
+        'Content-Type': 'application/json'
+      },
+    });
+
+    if (!response.ok) {
+      const data = await response.json().catch(() => null);
+
+      if (data && data.message) {
+        alert(data.message);
+      } else {
+        alert('Failed to edit a problem! Please try again.');
+      }
+      return;
+    }
+
+    getProblems();
+  }
+
   return (
-    <div className="container">
+    <div className="container-fluid" style={{ maxWidth: '1230px' }}>
       <div className="">
-        <h1>PeekCode</h1>
         {!jwt && (
           !hasAccount ? (
             <form onSubmit={handleRegister}>
@@ -160,11 +201,18 @@ function App() {
 
         {jwt && (
           <>
-            <button className="btn btn-outline-secondary" onClick={() => setToken(null)}>Log Out</button><br/><br/>
+            <div className="d-flex justify-content-between align-items-center mb-3">
+              <h1>PeekCode</h1>
+              <button className="btn btn-outline-secondary" onClick={() => setToken(null)}>Log Out</button>
+            </div>
             <div>
-              <button type="button" className="btn btn-outline-primary">Add</button>
-              <button type="button" className="btn btn-outline-warning">Edit</button>
-              <button type="button" className="btn btn-outline-danger">Delete</button><br/><br/>
+              <button
+                type="button"
+                className="btn btn-outline-primary"
+                onClick={() => setShowForm(true)}
+              >
+                Add
+              </button>
             </div>
 
             {problems.length === 0 ? (
@@ -172,21 +220,50 @@ function App() {
             ) : (
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', justifyContent: 'flex-start' }}>
                 {problems.map(problem => (
-                  <div className="card" style={{ width: '18rem' }}>
+                  <div className="card" style={{ width: '18rem', maxHeight: '22rem', overflowY: 'auto' }} key={problem._id.toString()}>
                     <div className="card-body">
-                      <a href={problem.url!} style={{ textDecoration: 'none', color: 'inherit' }}>
-                        <h5 className="card-title">{problem.title}</h5>
-                      </a>
+                      <div className="d-flex justify-content-between align-items-start">
+                        <a href={problem.url!} style={{ textDecoration: 'none', color: 'inherit' }}>
+                          <h5 className="card-title">{problem.title}</h5>
+                        </a>
+                        <div>
+                          {/* edit button */}
+                          <button
+                            className="btn btn-sm p-1 me-1"
+                            style={{ background: 'none', border: 'none' }}
+                            onClick={() => {
+                              setEditingProblem(problem);
+                              setSelectedTags(problem.tags.map(t => ({ value: t, label: t })));
+                            }}
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-pencil" viewBox="0 0 16 16">
+                              <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325"/>
+                            </svg>
+                          </button>
+                          {/* delete button */}
+                          <button className="btn btn-sm p-1" style={{ background: 'none', border: 'none' }}>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-trash2" viewBox="0 0 16 16">
+                              <path d="M14 3a.7.7 0 0 1-.037.225l-1.684 10.104A2 2 0 0 1 10.305 15H5.694a2 2 0 0 1-1.973-1.671L2.037 3.225A.7.7 0 0 1 2 3c0-1.105 2.686-2 6-2s6 .895 6 2M3.215 4.207l1.493 8.957a1 1 0 0 0 .986.836h4.612a1 1 0 0 0 .986-.836l1.493-8.957C11.69 4.689 9.954 5 8 5s-3.69-.311-4.785-.793"/>
+                            </svg>
+                          </button>
+                        </div>
+                      </div>
 
-                      <div className="d-flex justify-content-between align-items-center">
-                        <p className="card-subtitle text-muted m-0">{new Date(problem.date).toLocaleDateString()}</p>
+                      <div className="d-flex align-items-center gap-2">
+                        <p className="card-subtitle text-muted m-0">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-calendar" viewBox="0 0 16 16">
+                            <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4z"/>
+                          </svg>
+                          {" "}{new Date(problem.date).toLocaleDateString()}
+                        </p>
 
                         <p className="card-subtitle text-muted m-0">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-clock" viewBox="0 0 16 16">
-                          <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71z"/>
-                          <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16m7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0"/>
-                        </svg>
-                        {" "}{problem.timeSpent} min</p>
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-clock" viewBox="0 0 16 16">
+                            <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71z"/>
+                            <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16m7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0"/>
+                          </svg>
+                          {" "}{problem.timeSpent} min
+                        </p>
                       </div>
 
                       <p className="badge bg-secondary">{problem.difficulty}</p>
@@ -210,67 +287,27 @@ function App() {
               </div>
             )}
 
-            <form onSubmit={createProblem}>
-              <label className="form-label" htmlFor="title">Title</label>
-              <input type="text" className="form-control" id="title" name="title" />
-              <label className="form-label" htmlFor="url">URL</label>
-              <input type="text" className="form-control" id="url" name="url" />
-              <label className="form-label" htmlFor="difficulty">Difficulty</label>
-              <select className="form-select" aria-label="difficulty" id="difficulty" name="difficulty" defaultValue="">
-                <option selected value="Easy">Easy</option>
-                <option value="Medium">Medium</option>
-                <option value="Hard">Hard</option>
-              </select>
-              <label className="form-label" htmlFor="status">Status</label>
-              <select className="form-select" aria-label="status" id="status" name="status" defaultValue="Solved">
-                <option selected value="Solved">Solved</option>
-                <option value="Attempted">Attempted</option>
-                <option value="ReviewNeeded">Review Needed</option>
-                <option value="Skipped">Skipped</option>
-              </select>
-              <label className="form-label" htmlFor="date">Date</label>
-              <input type="date" className="form-control" id="date" name="date"></input>
-              <label className="form-label" htmlFor="timeSpent">Time Spent</label>
-              <input type="number" className="form-control" id="timeSpent" name="timeSpent" min="0" />
-              <label className="form-label" htmlFor="tags">Tags</label>
-              <div className="App" id="tags">
-                <CreatableSelect
-                  isMulti
-                  value={selectedTags}
-                  onChange={(newValue) => setSelectedTags(newValue as Array<{value: string, label: string}>)}
-                  placeholder=''
-                  noOptionsMessage={() => 'Type to Create'}
-                  options={tags}
-                  styles={{
-                    control: (base) => ({
-                      ...base,
-                      backgroundColor: 'var(--bs-body-bg)',
-                      color: 'var(--bs-body-color)',
-                      border: 'var(--bs-border-width) solid var(--bs-border-color)',
-                      borderRadius: 'var(--bs-border-radius)',
-                    }),
-                    input: (base) => ({
-                      ...base,
-                      color: "var(--bs-body-color)"
-                    }),
-                    menu: (base) => ({
-                      ...base,
-                      backgroundColor: "var(--bs-body-bg)",
-                      border: `var(--bs-border-width) solid var(--bs-border-color)`
-                    }),
-                    menuList: (base) => ({
-                      ...base,
-                      backgroundColor: "var(--bs-body-bg)"
-                    }),
-                  }}
-                />
-              </div>
-              <label className="form-label" htmlFor="notes">Notes</label>
-              <input type="text" className="form-control" id="notes" name="notes" />
-              <label className="form-label" htmlFor="dependency">Dependency</label>
-              <input type="range" className="form-range" min="0" max="100" id="dependency" name="dependency"></input>
-              <button type="submit" className="btn btn-outline-light">Submit</button><br/>
-            </form>
+            {showForm &&
+              (<ProblemForm
+                initialData={null}
+                selectedTags={selectedTags}
+                setSelectedTags={setSelectedTags}
+                tags={tags}
+                onSubmit={createProblem}
+                onClose={() => setShowForm(false)}
+              ></ProblemForm>)
+            }
+
+            {editingProblem &&
+              (<ProblemForm
+                initialData={editingProblem}
+                selectedTags={selectedTags}
+                setSelectedTags={setSelectedTags}
+                tags={tags}
+                onSubmit={(event) => editProblem(event, editingProblem._id.toString())}
+                onClose={() => setShowForm(false)}
+              ></ProblemForm>)
+            }
           </>
         )}
       </div>
