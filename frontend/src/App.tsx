@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react'
+import { useEffect, useState, useCallback, type FormEvent } from 'react'
 import { useStoreActions, useStoreState } from './store';
 import './App.css'
 import CreatableSelect from 'react-select/creatable';
@@ -62,20 +62,21 @@ function App() {
 
     const data = await response.json();
     setToken(data.token);
+    getProblems();
   }
 
-  const showProblems = async () => {
+  // https://infinitypaul.medium.com/reactjs-useeffect-usecallback-simplified-91e69fb0e7a3
+  // useCallback ensures the function is only re-created if its dependencies changed
+  const getProblems = useCallback(async () => {
     try {
       const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/v1/problems/getProblems`, {
-        method: "GET",
+        method: 'GET',
         headers: {
           'Authorization': `Bearer ${jwt}`,
         }
       })
 
-      if (!response.ok) {
-        throw new Error('Failed to fetch problems');
-      }
+      if (!response.ok) return;
 
       const data = await response.json();
       setProblems(data);
@@ -83,7 +84,13 @@ function App() {
       console.error('Error fetching problems:', error);
       alert('Failed to load problems');
     } 
-  }
+  }, [jwt])
+
+  // Functions are just objects in Javascript
+  // when the component re-renders, all functions inside it are re-created
+  useEffect(() => {
+    getProblems();
+  }, [getProblems]);
 
   const createProblem = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -120,6 +127,8 @@ function App() {
       }
       return;
     }
+
+    getProblems();
   }
 
   return (
@@ -151,7 +160,6 @@ function App() {
 
         {jwt && (
           <>
-            <h2>My Problems</h2>
             <button className="btn btn-outline-secondary" onClick={() => setToken(null)}>Log Out</button><br/><br/>
             <button type="button" className="btn btn-outline-primary">Add</button> 
             <button type="button" className="btn btn-outline-danger">Delete</button><br/><br/>
@@ -159,7 +167,11 @@ function App() {
             {problems.length === 0 ? (
               <p>Ready to Start?</p>
             ) : (
-              <></>
+              <div>
+                {problems.map(problem => (
+                  <>{problem.title}</>
+                ))}
+              </div>
             )}
 
             <form onSubmit={createProblem}>
