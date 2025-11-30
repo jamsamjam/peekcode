@@ -2,10 +2,11 @@ import { useState, type FormEvent } from 'react'
 import { useStoreActions, useStoreState } from './store';
 import './App.css'
 import CreatableSelect from 'react-select/creatable';
+import type { ProblemType } from '@backend/models/problem.model'
 
 function App() {
   const [hasAccount, setHasAccount] = useState(false);
-  const [problems, setProblems] = useState([]);
+  const [problems, setProblems] = useState<ProblemType[]>([]);
   const jwt = useStoreState((state) => state.jwt);
   const setToken = useStoreActions((actions) => actions.setToken);
   const [tags] = useState([]);

@@ -1,55 +1,56 @@
-import { model, Schema } from "mongoose"; // schema = structure
+import { model, Schema, type InferRawDocType } from "mongoose"; // schema = structure
 
-const problemSchema = new Schema(
-    {
-        owner: {
-            type: Schema.Types.ObjectId,
-            ref: 'User'
-        },
+const schemaDefinition = {
+    owner: {
+        type: Schema.Types.ObjectId,
+        ref: 'User'
+    },
 
-        title: {
-            type: String,
-            required: true,
-        },
+    title: {
+        type: String,
+        required: true,
+    },
 
-        url: String,
+    url: String,
 
-        difficulty: {
-            type: String,
-            enum: ["Easy", "Medium", "Hard"],
-            required: true,
-        },
-        
-        status: {
-            type: String,
-            enum: ["Solved", "Attempted", "ReviewNeeded", "Skipped"],
-            required: true,
-            default: "Solved",
-        },
+    difficulty: {
+        type: String,
+        enum: ["Easy", "Medium", "Hard"],
+        required: true,
+    },
+    
+    status: {
+        type: String,
+        enum: ["Solved", "Attempted", "ReviewNeeded", "Skipped"],
+        required: true,
+        default: "Solved",
+    },
 
-        date: {
-            type: Date,
-            default: Date.now,
-        },
+    date: {
+        type: Date,
+        default: Date.now,
+    },
 
-        timeSpent: Number, // in mins
+    timeSpent: Number, // in mins
 
-        tags: [String],
+    tags: [String],
 
-        notes: String,
+    notes: String,
 
-        dependency: {
-            type: Number,
-            min: 0,
-            max: 100,
-            default: 0,
-        },
+    dependency: {
+        type: Number,
+        min: 0,
+        max: 100,
+        default: 0,
+    },
 
-        createdAt: {
-            type: Date,
-            default: Date.now,
-        }
+    createdAt: {
+        type: Date,
+        default: Date.now,
     }
-)
+}
 
+const problemSchema = new Schema(schemaDefinition)
+
+export type ProblemType = InferRawDocType<typeof schemaDefinition>
 export const Problem = model("Problem", problemSchema)
