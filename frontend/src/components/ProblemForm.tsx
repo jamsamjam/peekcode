@@ -7,14 +7,15 @@ interface ProblemFormProps {
   selectedTags: Array<{ value: string; label: string }>;
   setSelectedTags: (tags: Array<{ value: string; label: string }>) => void;
   tags: Array<{ value: string; label: string }>;
-  onSubmit: (event: FormEvent<HTMLFormElement>) => void;
+  onSubmit: (formData: FormData) => void;
   onClose: () => void;
 }
 
-const ProblemForm = ({ initialData, selectedTags, setSelectedTags, tags, onSubmit, onClose}: ProblemFormProps) => {
+const ProblemForm = ({ initialData, selectedTags, setSelectedTags, tags, onSubmit, onClose }: ProblemFormProps) => {
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    onSubmit(event);
+    const formData = new FormData(event.currentTarget);
+    onSubmit(formData);
     onClose();
   };
 
@@ -77,7 +78,10 @@ const ProblemForm = ({ initialData, selectedTags, setSelectedTags, tags, onSubmi
     <input type="text" className="form-control" id="notes" name="notes" defaultValue={initialData?.notes ?? ''} />
     <label className="form-label" htmlFor="dependency">Dependency</label>
     <input type="range" className="form-range" min="0" max="100" id="dependency" name="dependency" defaultValue={initialData?.dependency}></input>
-    <button type="submit" className="btn btn-outline-light">Submit</button><br />
+    <div className="d-flex gap-2 mt-3">
+      <button type="button" className="btn btn-outline-danger flex-grow-1" onClick={onClose}>cancel</button><br />
+      <button type="submit" className="btn btn-outline-secondary flex-grow-1">submit</button><br />
+    </div>
   </form>
   );
 };

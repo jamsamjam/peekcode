@@ -3,6 +3,9 @@ import { useStoreActions, useStoreState } from './store';
 import './App.css'
 import type { ProblemType } from '@backend/models/problem.model'
 import ProblemForm from './components/ProblemForm';
+import Modal from 'react-modal';
+
+Modal.setAppElement('#root');
 
 function App() {
   const [hasAccount, setHasAccount] = useState(false);
@@ -10,9 +13,9 @@ function App() {
   const jwt = useStoreState((state) => state.jwt);
   const setToken = useStoreActions((actions) => actions.setToken);
 
+  const [modalMode, setModalMode] = useState<"create" | "edit" | null>(null);
   const [tags] = useState([]);
   const [selectedTags, setSelectedTags] = useState<Array<{ value: string, label: string }>>([]);
-  const [showForm, setShowForm] = useState(false);
   const [editingProblem, setEditingProblem] = useState<ProblemType|null>(null);
 
   const handleRegister = async (event: FormEvent<HTMLFormElement>) => {
@@ -95,12 +98,7 @@ function App() {
     getProblems();
   }, [getProblems]);
 
-  const createProblem = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    const formElement = event.currentTarget;
-    const formData = new FormData(formElement);
-
+  const createProblem = async (formData: FormData) => {
     const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/v1/problems/create`, {
       method: 'POST',
       body: JSON.stringify({
@@ -129,12 +127,7 @@ function App() {
     getProblems();
   }
 
-  const editProblem = async (event: FormEvent<HTMLFormElement>, problemId: string) => {
-    event.preventDefault();
-
-    const formElement = event.currentTarget;
-    const formData = new FormData(formElement);
-
+  const editProblem = async (formData: FormData, problemId: string) => {
     const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/v1/problems/update/${problemId}`, {
       method: 'PATCH',
       body: JSON.stringify({
@@ -188,47 +181,57 @@ function App() {
       <div className="">
         {!jwt && (
           !hasAccount ? (
-            <form onSubmit={handleRegister}>
-              <label className="form-label" htmlFor="email">Email</label>
-              <input type="email" className="form-control" id="email" name="email" />
-              <label className="form-label" htmlFor="password">Password</label>
-              <input type="password" className="form-control" id="password" name="password" />
-              <label className="form-label" htmlFor="username">Username</label>
-              <input type="text" className="form-control" id="username" name="username" /><br/>
-              <button className="btn btn-outline-secondary">Sign Up</button><br/>
-              <button className="textButton" onClick={() => setHasAccount(true)}>I already have an account.</button>
-            </form>) : (
-            <form onSubmit={handleLogin}>
-              <label className="form-label" htmlFor="email">Email</label>
-              <input type="email" className="form-control" id="email" name="email" />
-              <label className="form-label" htmlFor="password">Password</label>
-              <input type="password" className="form-control" id="password" name="password" /><br/>
-              <button className="btn btn-outline-secondary">Log In</button><br/>
-              <button className="textButton" onClick={() => setHasAccount(true)}>Actually, I don't have one yet.</button>
-            </form>
+            <>
+              <h1 className="mt-4">PeekCode</h1>
+              <form onSubmit={handleRegister}>
+                <label className="form-label" htmlFor="email">Email</label>
+                <input type="email" className="form-control" id="email" name="email" />
+                <label className="form-label" htmlFor="password">Password</label>
+                <input type="password" className="form-control" id="password" name="password" />
+                <label className="form-label" htmlFor="username">Username</label>
+                <input type="text" className="form-control" id="username" name="username" /><br />
+                <button className="btn btn-outline-secondary">Sign Up</button><br />
+                <button className="textButton" onClick={() => setHasAccount(true)}>I already have an account.</button>
+              </form>
+            </>) : (<>
+              <h1 className="mt-4">PeekCode</h1>
+              <form onSubmit={handleLogin}>
+                <label className="form-label" htmlFor="email">Email</label>
+                <input type="email" className="form-control" id="email" name="email" />
+                <label className="form-label" htmlFor="password">Password</label>
+                <input type="password" className="form-control" id="password" name="password" /><br />
+                <button className="btn btn-outline-secondary">Log In</button><br />
+                <button className="textButton" onClick={() => setHasAccount(true)}>Actually, I don't have one yet.</button>
+              </form>
+            </>
           )
         )}
 
         {jwt && (
           <>
             <div className="d-flex justify-content-between align-items-center mb-3">
-              <h1>PeekCode</h1>
-              <button className="btn btn-outline-secondary" onClick={() => setToken(null)}>Log Out</button>
-            </div>
-            <div>
-              <button
-                type="button"
-                className="btn btn-outline-primary"
-                onClick={() => setShowForm(true)}
-              >
-                Add
-              </button>
+              <h1 className="mt-4">PeekCode</h1>
+              <div>
+                {/* add button */}
+                <button
+                  type="button"
+                  className="btn btn-outline-primary me-2"
+                  onClick={() => {
+                    setSelectedTags([]);
+                    setEditingProblem(null);
+                    setModalMode("create");
+                  }}
+                >
+                  Add Problem
+                </button>
+                <button className="btn btn-outline-secondary" onClick={() => setToken(null)}>Log Out</button>
+              </div>
             </div>
 
             {problems.length === 0 ? (
               <p>Ready to Start?</p>
             ) : (
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', justifyContent: 'flex-start' }}>
+              <div className="d-flex flex-wrap gap-3 justify-content-start mt-4">
                 {problems.map(problem => (
                   <div className="card" style={{ width: '18rem', maxHeight: '22rem', overflowY: 'auto' }} key={problem._id.toString()}>
                     <div className="card-body">
@@ -244,6 +247,7 @@ function App() {
                             onClick={() => {
                               setEditingProblem(problem);
                               setSelectedTags(problem.tags.map(t => ({ value: t, label: t })));
+                              setModalMode("edit");
                             }}
                           >
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-pencil" viewBox="0 0 16 16">
@@ -303,27 +307,25 @@ function App() {
               </div>
             )}
 
-            {showForm &&
-              (<ProblemForm
-                initialData={null}
+            <Modal
+              isOpen={modalMode !== null}
+              onRequestClose={() => setModalMode(null)}
+              className="myModal"
+              contentLabel='Add New Problem'
+            >
+              <ProblemForm
+                initialData={modalMode === "edit" ? editingProblem : null}
                 selectedTags={selectedTags}
                 setSelectedTags={setSelectedTags}
                 tags={tags}
-                onSubmit={createProblem}
-                onClose={() => setShowForm(false)}
-              ></ProblemForm>)
-            }
-
-            {editingProblem &&
-              (<ProblemForm
-                initialData={editingProblem}
-                selectedTags={selectedTags}
-                setSelectedTags={setSelectedTags}
-                tags={tags}
-                onSubmit={(event) => editProblem(event, editingProblem._id.toString())}
-                onClose={() => setShowForm(false)}
-              ></ProblemForm>)
-            }
+                onSubmit={
+                  modalMode === "edit"
+                    ? (formData) => editProblem(formData, editingProblem!._id.toString())
+                    : createProblem
+                }
+                onClose={() => setModalMode(null)}
+              ></ProblemForm>
+            </Modal>
           </>
         )}
       </div>
