@@ -177,7 +177,7 @@ function App() {
   }
 
   return (
-    <div className="container-fluid" style={{ maxWidth: '1230px' }}>
+    <div className="container-fluid d-flex justify-content-center mt-4">
       <div className="">
         {!jwt && (
           !hasAccount ? (
@@ -190,7 +190,7 @@ function App() {
                 <input type="password" className="form-control" id="password" name="password" />
                 <label className="form-label" htmlFor="username">Username</label>
                 <input type="text" className="form-control" id="username" name="username" /><br />
-                <button className="btn btn-outline-secondary">Sign Up</button><br />
+                <button type="submit" className="btn btn-outline-secondary">Sign Up</button><br />
                 <button className="textButton" onClick={() => setHasAccount(true)}>I already have an account.</button>
               </form>
             </>) : (<>
@@ -200,7 +200,7 @@ function App() {
                 <input type="email" className="form-control" id="email" name="email" />
                 <label className="form-label" htmlFor="password">Password</label>
                 <input type="password" className="form-control" id="password" name="password" /><br />
-                <button className="btn btn-outline-secondary">Log In</button><br />
+                <button type="submit" className="btn btn-outline-secondary">Log In</button><br />
                 <button className="textButton" onClick={() => setHasAccount(true)}>Actually, I don't have one yet.</button>
               </form>
             </>
