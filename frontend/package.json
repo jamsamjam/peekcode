@@ -12,6 +12,7 @@
   "dependencies": {
     "easy-peasy": "^6.1.0",
     "react": "^19.2.0",
+    "react-activity-calendar": "^3.0.1",
     "react-dom": "^19.2.0",
     "react-markdown": "^10.1.0",
     "react-modal": "^3.16.3",

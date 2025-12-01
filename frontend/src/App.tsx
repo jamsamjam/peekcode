@@ -1,12 +1,13 @@
 import { useEffect, useState, useCallback, type FormEvent } from 'react'
 import { useStoreActions, useStoreState } from './store';
 import './App.css'
-import type { ProblemType } from '@backend/models/problem.model'
+import type { ProblemType } from '@backend/models/problem.model';
 import ProblemForm from './components/ProblemForm';
 import Modal from 'react-modal';
 import Markdown from 'react-markdown'
 import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight";
+import ActivityCalendar from './components/ActivityCalendar';
 
 Modal.setAppElement('#root');
 
@@ -73,6 +74,38 @@ function App() {
     setToken(data.token);
     getProblems();
   }
+
+  const difficultyToLevel = (difficulty: string) => {
+    switch (difficulty) {
+      case "Easy":
+        return 1
+      case "Medium":
+        return 2
+      case "Hard":
+        return 4
+      default:
+        return 0
+    }
+  }
+
+  const activityMap: Record<string, { count: number; level: number }> = {}
+
+  problems.forEach(p => {
+    const date = new Date(p.date).toISOString().split("T")[0]
+    const level = difficultyToLevel(p.difficulty)
+
+    if (!activityMap[date]) {
+      activityMap[date] = { count: 1, level }
+    } else {
+      activityMap[date].count += 1
+      activityMap[date].level = Math.max(activityMap[date].level, level)
+    }
+  })
+
+  const activityData = Object.entries(activityMap).map(([date, data]) => ({
+    date,
+    ...data
+  }))
 
   // https://infinitypaul.medium.com/reactjs-useeffect-usecallback-simplified-91e69fb0e7a3
   // useCallback ensures the function is only re-created if its dependencies changed
@@ -231,12 +264,17 @@ function App() {
               </div>
             </div>
 
+            <ActivityCalendar
+              data={activityData}
+              loading={activityData.length === 0}
+            />
+
             {problems.length === 0 ? (
               <p>Ready to Start?</p>
             ) : (
-              <div className="d-flex flex-wrap gap-3 justify-content-start mt-4">
+              <div className="problems-grid mt-4">
                 {problems.map(problem => (
-                  <div className="card" style={{ width: '18rem', maxHeight: '22rem', overflowY: 'auto' }} key={problem._id.toString()}>
+                  <div className="card" style={{ width: '18rem', maxHeight: '20rem', overflowY: 'auto' }} key={problem._id.toString()}>
                     <div className="card-body">
                       <div className="d-flex justify-content-between align-items-start">
                         <a href={problem.url!} style={{ textDecoration: 'none', color: 'inherit' }}>
