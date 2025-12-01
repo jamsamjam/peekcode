@@ -214,163 +214,165 @@ function App() {
 
   return (
     <div className="container-fluid d-flex justify-content-center mt-4">
-      <div className="">
-        {!jwt && (
-          !hasAccount ? (
+      <div className="col-12 col-lg-7"> 
+        <div className="">
+          {!jwt && (
+            !hasAccount ? (
+              <>
+                <h1 className="mt-4">PeekCode</h1>
+                <form onSubmit={handleRegister}>
+                  <label className="form-label" htmlFor="email">Email</label>
+                  <input type="email" className="form-control" id="email" name="email" />
+                  <label className="form-label" htmlFor="password">Password</label>
+                  <input type="password" className="form-control" id="password" name="password" />
+                  <label className="form-label" htmlFor="username">Username</label>
+                  <input type="text" className="form-control" id="username" name="username" /><br />
+                  <button type="submit" className="btn btn-outline-secondary">Sign Up</button><br />
+                  <button className="textButton" onClick={() => setHasAccount(true)}>I already have an account.</button>
+                </form>
+              </>) : (<>
+                <h1 className="mt-4">PeekCode</h1>
+                <form onSubmit={handleLogin}>
+                  <label className="form-label" htmlFor="email">Email</label>
+                  <input type="email" className="form-control" id="email" name="email" />
+                  <label className="form-label" htmlFor="password">Password</label>
+                  <input type="password" className="form-control" id="password" name="password" /><br />
+                  <button type="submit" className="btn btn-outline-secondary">Log In</button><br />
+                  <button className="textButton" onClick={() => setHasAccount(true)}>Actually, I don't have one yet.</button>
+                </form>
+              </>
+            )
+          )}
+
+          {jwt && (
             <>
-              <h1 className="mt-4">PeekCode</h1>
-              <form onSubmit={handleRegister}>
-                <label className="form-label" htmlFor="email">Email</label>
-                <input type="email" className="form-control" id="email" name="email" />
-                <label className="form-label" htmlFor="password">Password</label>
-                <input type="password" className="form-control" id="password" name="password" />
-                <label className="form-label" htmlFor="username">Username</label>
-                <input type="text" className="form-control" id="username" name="username" /><br />
-                <button type="submit" className="btn btn-outline-secondary">Sign Up</button><br />
-                <button className="textButton" onClick={() => setHasAccount(true)}>I already have an account.</button>
-              </form>
-            </>) : (<>
-              <h1 className="mt-4">PeekCode</h1>
-              <form onSubmit={handleLogin}>
-                <label className="form-label" htmlFor="email">Email</label>
-                <input type="email" className="form-control" id="email" name="email" />
-                <label className="form-label" htmlFor="password">Password</label>
-                <input type="password" className="form-control" id="password" name="password" /><br />
-                <button type="submit" className="btn btn-outline-secondary">Log In</button><br />
-                <button className="textButton" onClick={() => setHasAccount(true)}>Actually, I don't have one yet.</button>
-              </form>
-            </>
-          )
-        )}
-
-        {jwt && (
-          <>
-            <div className="d-flex justify-content-between align-items-center mb-3">
-              <h1 className="mt-4">PeekCode</h1>
-              <div>
-                {/* add button */}
-                <button
-                  type="button"
-                  className="btn btn-outline-primary me-2"
-                  onClick={() => {
-                    setSelectedTags([]);
-                    setEditingProblem(null);
-                    setModalMode("create");
-                  }}
-                >
-                  Add Problem
-                </button>
-                <button className="btn btn-outline-secondary" onClick={() => setToken(null)}>Log Out</button>
+              <div className="d-flex justify-content-between align-items-center mb-3">
+                <h1 className="mt-4">PeekCode</h1>
+                <div>
+                  {/* add button */}
+                  <button
+                    type="button"
+                    className="btn btn-outline-primary me-2"
+                    onClick={() => {
+                      setSelectedTags([]);
+                      setEditingProblem(null);
+                      setModalMode("create");
+                    }}
+                  >
+                    Add Problem
+                  </button>
+                  <button className="btn btn-outline-secondary" onClick={() => setToken(null)}>Log Out</button>
+                </div>
               </div>
-            </div>
 
-            <ActivityCalendar
-              data={activityData}
-              loading={activityData.length === 0}
-            />
+              <ActivityCalendar
+                data={activityData}
+                loading={activityData.length === 0}
+              />
 
-            {problems.length === 0 ? (
-              <p>Ready to Start?</p>
-            ) : (
-              <div className="problems-grid mt-4">
-                {problems.map(problem => (
-                  <div className="card" style={{ width: '18rem', maxHeight: '20rem', overflowY: 'auto' }} key={problem._id.toString()}>
-                    <div className="card-body">
-                      <div className="d-flex justify-content-between align-items-start">
-                        <a href={problem.url!} style={{ textDecoration: 'none', color: 'inherit' }}>
-                          <h5 className="card-title">{problem.title}</h5>
-                        </a>
-                        <div>
-                          {/* edit button */}
-                          <button
-                            className="btn btn-sm p-1 me-1"
-                            style={{ background: 'none', border: 'none' }}
-                            onClick={() => {
-                              setEditingProblem(problem);
-                              setSelectedTags(problem.tags.map(t => ({ value: t, label: t })));
-                              setModalMode("edit");
-                            }}
-                          >
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-pencil" viewBox="0 0 16 16">
-                              <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325"/>
-                            </svg>
-                          </button>
-                          {/* delete button */}
-                          <button
-                            className="btn btn-sm p-1"
-                            style={{ background: 'none', border: 'none' }}
-                            onClick={() => {
-                              deleteProblem(problem._id.toString());
-                            }}
-                          >
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-trash2" viewBox="0 0 16 16">
-                              <path d="M14 3a.7.7 0 0 1-.037.225l-1.684 10.104A2 2 0 0 1 10.305 15H5.694a2 2 0 0 1-1.973-1.671L2.037 3.225A.7.7 0 0 1 2 3c0-1.105 2.686-2 6-2s6 .895 6 2M3.215 4.207l1.493 8.957a1 1 0 0 0 .986.836h4.612a1 1 0 0 0 .986-.836l1.493-8.957C11.69 4.689 9.954 5 8 5s-3.69-.311-4.785-.793"/>
-                            </svg>
-                          </button>
+              {problems.length === 0 ? (
+                <p>Ready to Start?</p>
+              ) : (
+                <div className="problems-grid mt-4">
+                  {problems.map(problem => (
+                    <div className="card" style={{ width: '18rem', height: '20rem', overflowY: 'auto' }} key={problem._id.toString()}>
+                      <div className="card-body">
+                        <div className="d-flex justify-content-between align-items-start">
+                          <a href={problem.url!} style={{ textDecoration: 'none', color: 'inherit' }}>
+                            <h5 className="card-title">{problem.title}</h5>
+                          </a>
+                          <div>
+                            {/* edit button */}
+                            <button
+                              className="btn btn-sm p-1 me-1"
+                              style={{ background: 'none', border: 'none' }}
+                              onClick={() => {
+                                setEditingProblem(problem);
+                                setSelectedTags(problem.tags.map(t => ({ value: t, label: t })));
+                                setModalMode("edit");
+                              }}
+                            >
+                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-pencil" viewBox="0 0 16 16">
+                                <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325"/>
+                              </svg>
+                            </button>
+                            {/* delete button */}
+                            <button
+                              className="btn btn-sm p-1"
+                              style={{ background: 'none', border: 'none' }}
+                              onClick={() => {
+                                deleteProblem(problem._id.toString());
+                              }}
+                            >
+                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-trash2" viewBox="0 0 16 16">
+                                <path d="M14 3a.7.7 0 0 1-.037.225l-1.684 10.104A2 2 0 0 1 10.305 15H5.694a2 2 0 0 1-1.973-1.671L2.037 3.225A.7.7 0 0 1 2 3c0-1.105 2.686-2 6-2s6 .895 6 2M3.215 4.207l1.493 8.957a1 1 0 0 0 .986.836h4.612a1 1 0 0 0 .986-.836l1.493-8.957C11.69 4.689 9.954 5 8 5s-3.69-.311-4.785-.793"/>
+                              </svg>
+                            </button>
+                          </div>
                         </div>
-                      </div>
 
-                      <div className="d-flex align-items-center gap-2">
-                        <p className="card-subtitle text-muted m-0">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-calendar" viewBox="0 0 16 16">
-                            <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4z"/>
-                          </svg>
-                          {" "}{new Date(problem.date).toLocaleDateString()}
+                        <div className="d-flex align-items-center gap-2">
+                          <p className="card-subtitle text-muted m-0">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-calendar" viewBox="0 0 16 16">
+                              <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4z"/>
+                            </svg>
+                            {" "}{new Date(problem.date).toLocaleDateString()}
+                          </p>
+
+                          <p className="card-subtitle text-muted m-0">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-clock" viewBox="0 0 16 16">
+                              <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71z"/>
+                              <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16m7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0"/>
+                            </svg>
+                            {" "}{problem.timeSpent} min
+                          </p>
+                        </div>
+
+                        <p className="badge bg-secondary">{problem.difficulty}</p>
+
+                        <p className="card-text small text-muted mb-1">
+                          {problem.status}
                         </p>
 
-                        <p className="card-subtitle text-muted m-0">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-clock" viewBox="0 0 16 16">
-                            <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71z"/>
-                            <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16m7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0"/>
-                          </svg>
-                          {" "}{problem.timeSpent} min
-                        </p>
+                        {problem.notes && (
+                          <Markdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeHighlight]}>
+                            {problem.notes}
+                          </Markdown>
+                        )}
+
+                        {problem.tags && problem.tags.length > 0 && (
+                          <div className="mt-2">
+                            <span className="text-muted small">{problem.tags.join(", ")}</span>
+                          </div>
+                        )}
                       </div>
-
-                      <p className="badge bg-secondary">{problem.difficulty}</p>
-
-                      <p className="card-text small text-muted mb-1">
-                        {problem.status}
-                      </p>
-
-                      {problem.notes && (
-                        <Markdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeHighlight]}>
-                          {problem.notes}
-                        </Markdown>
-                      )}
-
-                      {problem.tags && problem.tags.length > 0 && (
-                        <div className="mt-2">
-                          <span className="text-muted small">{problem.tags.join(", ")}</span>
-                        </div>
-                      )}
                     </div>
-                  </div>
-                ))}
-              </div>
-            )}
+                  ))}
+                </div>
+              )}
 
-            <Modal
-              isOpen={modalMode !== null}
-              onRequestClose={() => setModalMode(null)}
-              className="myModal"
-              contentLabel='Add New Problem'
-            >
-              <ProblemForm
-                initialData={modalMode === "edit" ? editingProblem : null}
-                selectedTags={selectedTags}
-                setSelectedTags={setSelectedTags}
-                tags={tags}
-                onSubmit={
-                  modalMode === "edit"
-                    ? (formData) => editProblem(formData, editingProblem!._id.toString())
-                    : createProblem
-                }
-                onClose={() => setModalMode(null)}
-              ></ProblemForm>
-            </Modal>
-          </>
-        )}
+              <Modal
+                isOpen={modalMode !== null}
+                onRequestClose={() => setModalMode(null)}
+                className="myModal"
+                contentLabel='Add New Problem'
+              >
+                <ProblemForm
+                  initialData={modalMode === "edit" ? editingProblem : null}
+                  selectedTags={selectedTags}
+                  setSelectedTags={setSelectedTags}
+                  tags={tags}
+                  onSubmit={
+                    modalMode === "edit"
+                      ? (formData) => editProblem(formData, editingProblem!._id.toString())
+                      : createProblem
+                  }
+                  onClose={() => setModalMode(null)}
+                ></ProblemForm>
+              </Modal>
+            </>
+          )}
+        </div>
       </div>
     </div>
   )
