@@ -75,7 +75,7 @@ const ProblemForm = ({ initialData, selectedTags, setSelectedTags, tags, onSubmi
       />
     </div>
     <label className="form-label" htmlFor="notes">Notes</label>
-    <input type="text" className="form-control" id="notes" name="notes" defaultValue={initialData?.notes ?? ''} />
+    <textarea className="form-control" id="notes" name="notes" rows={6} defaultValue={initialData?.notes ?? ''} />
     <label className="form-label" htmlFor="dependency">Dependency</label>
     <input type="range" className="form-range" min="0" max="100" id="dependency" name="dependency" defaultValue={initialData?.dependency}></input>
     <div className="d-flex gap-2 mt-3">

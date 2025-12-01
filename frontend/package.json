@@ -13,8 +13,11 @@
     "easy-peasy": "^6.1.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
+    "react-markdown": "^10.1.0",
     "react-modal": "^3.16.3",
-    "react-select": "^5.10.2"
+    "react-select": "^5.10.2",
+    "rehype-highlight": "^7.0.2",
+    "remark-gfm": "^4.0.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",

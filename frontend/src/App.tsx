@@ -4,6 +4,9 @@ import './App.css'
 import type { ProblemType } from '@backend/models/problem.model'
 import ProblemForm from './components/ProblemForm';
 import Modal from 'react-modal';
+import Markdown from 'react-markdown'
+import remarkGfm from "remark-gfm";
+import rehypeHighlight from "rehype-highlight";
 
 Modal.setAppElement('#root');
 
@@ -293,7 +296,9 @@ function App() {
                       </p>
 
                       {problem.notes && (
-                        <p className="card-text mt-2">{problem.notes}</p>
+                        <Markdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeHighlight]}>
+                          {problem.notes}
+                        </Markdown>
                       )}
 
                       {problem.tags && problem.tags.length > 0 && (
