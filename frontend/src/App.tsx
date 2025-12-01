@@ -228,7 +228,7 @@ function App() {
                   <label className="form-label" htmlFor="username">Username</label>
                   <input type="text" className="form-control" id="username" name="username" /><br />
                   <button type="submit" className="btn btn-outline-secondary">Sign Up</button><br />
-                  <button className="textButton" onClick={() => setHasAccount(true)}>I already have an account.</button>
+                  <button type="button" className="textButton" onClick={() => setHasAccount(true)}>I already have an account.</button>
                 </form>
               </>) : (<>
                 <h1 className="mt-4">PeekCode</h1>
@@ -238,7 +238,7 @@ function App() {
                   <label className="form-label" htmlFor="password">Password</label>
                   <input type="password" className="form-control" id="password" name="password" /><br />
                   <button type="submit" className="btn btn-outline-secondary">Log In</button><br />
-                  <button className="textButton" onClick={() => setHasAccount(true)}>Actually, I don't have one yet.</button>
+                  <button type="button" className="textButton" onClick={() => setHasAccount(false)}>Actually, I don't have one yet.</button>
                 </form>
               </>
             )
