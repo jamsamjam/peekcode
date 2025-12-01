@@ -43,7 +43,7 @@ const createProblem = async (req: Request, res: Response) => {
 
 const getProblems = async (req: Request, res: Response) => {
     try {
-        const getProblems = await Problem.find();
+        const getProblems = await Problem.find({ owner: req.user!._id });
         res.status(200).json(getProblems);
     } catch (error) {
         res.status(500).json({
@@ -63,6 +63,16 @@ const updateProblem = async (req: Request, res: Response) => {
 
         const body = req.body;
 
+        // First check if the problem exists and belongs to the user
+        const existingProblem = await Problem.findOne({ 
+            _id: req.params.id, 
+            owner: req.user!._id 
+        });
+
+        if (!existingProblem) {
+            return res.status(404).json({ message: "Problem not found" });
+        }
+
         const problem = await Problem.findByIdAndUpdate(req.params.id, {
             title: body.title,
             url: body.url,
@@ -74,8 +84,6 @@ const updateProblem = async (req: Request, res: Response) => {
             notes: body.notes,
             dependency: body.dependency,
         }, { new: true });
-
-        if (!problem) return res.status(404).json({ message: "Problem not found" });
 
         res.status(200).json({
             message: "Problem updated successfully", problem
@@ -89,8 +97,21 @@ const updateProblem = async (req: Request, res: Response) => {
 
 const deleteProblem = async (req: Request, res: Response) => {
     try {
-        const deleted = await Problem.findByIdAndDelete(req.params.id);
-        if (!deleted) return res.status(404).json({ message: "Problem not found" });
+        // delete only if the problem belongs to the user
+        const deleted = await Problem.findOneAndDelete({ 
+            _id: req.params.id, 
+            owner: req.user!._id 
+        });
+        
+        if (!deleted) {
+            return res.status(404).json({ message: "Problem not found" });
+        }
+
+        // also remove the problem reference from the user's problems array
+        await User.findByIdAndUpdate(
+            req.user!._id,
+            { $pull: { problems: req.params.id } }
+        );
 
         res.status(200).json({
             message: "Problem deleted successfully"
