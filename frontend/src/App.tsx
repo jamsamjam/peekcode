@@ -88,24 +88,42 @@ function App() {
     }
   }
 
-  const activityMap: Record<string, { count: number; level: number }> = {}
+  const activityMap: Record<string, { count: number; level: number }> = {};
 
   problems.forEach(p => {
-    const date = new Date(p.date).toISOString().split("T")[0]
-    const level = difficultyToLevel(p.difficulty)
+    const date = new Date(p.date).toISOString().split("T")[0];
+    const level = difficultyToLevel(p.difficulty);
 
     if (!activityMap[date]) {
-      activityMap[date] = { count: 1, level }
+      activityMap[date] = { count: 1, level };
     } else {
-      activityMap[date].count += 1
-      activityMap[date].level = Math.max(activityMap[date].level, level)
+      activityMap[date].count += 1;
+      activityMap[date].level += level;
     }
   })
 
-  const activityData = Object.entries(activityMap).map(([date, data]) => ({
-    date,
-    ...data
-  }))
+  const buildCalendarData = (activityMap :Record<string, { count: number; level: number }>, year :number) => {
+    const start = new Date(year, 0, 1);
+    const end = new Date(year, 11, 31);
+
+    const result = []
+    const d = new Date(start)
+
+    while (d <= end) {
+      const ds = d.toISOString().split('T')[0]
+      result.push(
+        activityMap[ds]
+          ? { date: ds, count: activityMap[ds].count, level: activityMap[ds].level, }
+          : { date: ds, count: 0, level: 0 }
+      )
+      d.setDate(d.getDate() + 1);
+    }
+
+    return result;
+  }
+
+  const currentYear = new Date().getFullYear();
+  const activityData = buildCalendarData(activityMap, currentYear)
 
   // https://infinitypaul.medium.com/reactjs-useeffect-usecallback-simplified-91e69fb0e7a3
   // useCallback ensures the function is only re-created if its dependencies changed
