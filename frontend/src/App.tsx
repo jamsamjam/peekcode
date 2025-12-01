@@ -17,6 +17,10 @@ function App() {
   const jwt = useStoreState((state) => state.jwt);
   const setToken = useStoreActions((actions) => actions.setToken);
 
+  const [memo, setMemo] = useState("Hello! Add a link or write a memo here..");
+  const [editingMemo, setEditingMemo] = useState(false)
+  const [tempMemo, setTempMemo] = useState(memo)
+
   const [modalMode, setModalMode] = useState<"create" | "edit" | null>(null);
   const [tags] = useState([]);
   const [selectedTags, setSelectedTags] = useState<Array<{ value: string, label: string }>>([]);
@@ -73,6 +77,20 @@ function App() {
     const data = await response.json();
     setToken(data.token);
     getProblems();
+  }
+
+  const editMemo = () => {
+    setTempMemo(memo);
+    setEditingMemo(true)
+  }
+
+  const saveMemo = () => {
+    setMemo(tempMemo)
+    setEditingMemo(false)
+  }
+
+  const cancelMemo = () => {
+    setEditingMemo(false)
   }
 
   const difficultyToLevel = (difficulty: string) => {
@@ -283,10 +301,46 @@ function App() {
                 </div>
               </div>
 
-              <ActivityCalendar
-                data={activityData}
-                loading={activityData.length === 0}
-              />
+              <div className="mb-4 small d-flex">
+                {editingMemo ? (
+                  <>
+                    <textarea
+                      className="form-control"
+                      value={tempMemo}
+                      rows={2}
+                      onChange={(e) => setTempMemo(e.target.value)}
+                    />
+                    <button style={{ background: 'none', border: 'none', marginBottom: 'auto', }} onClick={saveMemo}>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-check2" viewBox="0 0 16 16">
+                        <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/>
+                      </svg>
+                    </button>
+                    <button style={{ background: 'none', border: 'none', marginBottom: 'auto', }} onClick={cancelMemo}>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" className="bi bi-x-lg" viewBox="0 0 16 16">
+                        <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
+                      </svg>
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <Markdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeHighlight]} >
+                      {memo}
+                    </Markdown>
+                    <button style={{ background: 'none', border: 'none', marginBottom: 'auto', }} onClick={editMemo}>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="currentColor" className="bi bi-arrow-down-left" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M2 13.5a.5.5 0 0 0 .5.5h6a.5.5 0 0 0 0-1H3.707L13.854 2.854a.5.5 0 0 0-.708-.708L3 12.293V7.5a.5.5 0 0 0-1 0z"/>
+                      </svg>
+                    </button>
+                  </>
+                )}
+              </div>
+
+              <div>
+                <ActivityCalendar
+                  data={activityData}
+                  loading={activityData.length === 0}
+                />
+              </div>
 
               {problems.length === 0 ? (
                 <p>Ready to Start?</p>
