@@ -2,7 +2,10 @@
 
 A simple web app to help coding test preparation.
 
+## Tech Stack
 
+- **Backend**: Node.js + Express, MongoDB
+- **Frontend**: React + Vite
 
 ## Small note
 
