@@ -360,7 +360,7 @@ function App() {
                               style={{ background: 'none', border: 'none' }}
                               onClick={() => {
                                 setEditingProblem(problem);
-                                setSelectedTags(problem.tags.map(t => ({ value: t, label: t })));
+                                setSelectedTags(problem.tags.map((t: string) => ({ value: t, label: t })));
                                 setModalMode("edit");
                               }}
                             >
