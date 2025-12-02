@@ -32,7 +32,7 @@ function App() {
     const formElement = event.currentTarget;
     const formData = new FormData(formElement);
 
-    const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/v1/auth/register`, {
+    const response = await fetch(`/api/v1/auth/register`, {
       method: 'POST',
       body: JSON.stringify({
         email: formData.get('email'), // could be just formData ?
@@ -60,7 +60,7 @@ function App() {
     const formElement = event.currentTarget;
     const formData = new FormData(formElement);
 
-    const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/v1/auth/login`, {
+    const response = await fetch(`/api/v1/auth/login`, {
       method: 'POST',
       body: JSON.stringify({
         email: formData.get('email'),
@@ -147,7 +147,7 @@ function App() {
   // useCallback ensures the function is only re-created if its dependencies changed
   const getProblems = useCallback(async () => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/v1/problems/getProblems`, {
+      const response = await fetch(`/api/v1/problems/getProblems`, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${jwt}`,
@@ -171,7 +171,7 @@ function App() {
   }, [getProblems]);
 
   const createProblem = async (formData: FormData) => {
-    const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/v1/problems/create`, {
+    const response = await fetch(`/api/v1/problems/create`, {
       method: 'POST',
       body: JSON.stringify({
         title: formData.get('title'),
@@ -200,7 +200,7 @@ function App() {
   }
 
   const editProblem = async (formData: FormData, problemId: string) => {
-    const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/v1/problems/update/${problemId}`, {
+    const response = await fetch(`/api/v1/problems/update/${problemId}`, {
       method: 'PATCH',
       body: JSON.stringify({
         title: formData.get('title'),
@@ -232,7 +232,7 @@ function App() {
     const ok = window.confirm("Are you sure you want to delete this problem?");
     if (!ok) return;
 
-    const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/v1/problems/delete/${problemId}`, {
+    const response = await fetch(`/api/v1/problems/delete/${problemId}`, {
       method: 'DELETE',
       headers: { 
         'Authorization': `Bearer ${jwt!}`,
