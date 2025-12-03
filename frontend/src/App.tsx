@@ -76,8 +76,25 @@ function App() {
 
     const data = await response.json();
     setToken(data.token);
-    getProblems();
   }
+
+  const getMemo = useCallback(async () => {
+    try {
+      const response = await fetch(`/api/v1/user/memo`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${jwt}`,
+        }
+      })
+
+      if (!response.ok) return;
+
+      const data = await response.json();
+      setMemo(data.memo || "Hello! Add a link or write a memo here..");
+    } catch (error) {
+      console.error('Error fetching memo:', error);
+    }
+  }, [jwt])
 
   const editMemo = () => {
     setTempMemo(memo);
@@ -186,29 +203,9 @@ function App() {
   // Functions are just objects in Javascript
   // when the component re-renders, all functions inside it are re-created
   useEffect(() => {
-    if (!jwt) return;
-
-    const fetchMemo = async () => {
-      try {
-        const response = await fetch(`/api/v1/user/memo`, {
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${jwt}`,
-          }
-        })
-
-        if (!response.ok) return;
-
-        const data = await response.json();
-        setMemo(data.memo || "Hello! Add a link or write a memo here..");
-      } catch (error) {
-        console.error('Error fetching memo:', error);
-      }
-    };
-
     getProblems();
-    fetchMemo();
-  }, [getProblems, jwt]);
+    getMemo();
+  }, [getProblems, getMemo]);
 
   const createProblem = async (formData: FormData) => {
     const response = await fetch(`/api/v1/problems/create`, {
