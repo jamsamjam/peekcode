@@ -17,6 +17,6 @@ import authenticateToken from "./middlewares/auth.middleware.js";
 
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/problems", authenticateToken, problemRouter);
-app.use("/api/v1/users", authenticateToken, userRouter);
+app.use("/api/v1/user", authenticateToken, userRouter);
 
 export default app;

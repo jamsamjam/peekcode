@@ -15,21 +15,21 @@ const getUser = async (req: Request, res: Response) => {
     }
 }
 
-const createMemo = async (req: Request, res: Response) => {
+const updateMemo = async (req: Request, res: Response) => {
    try {
-        const body = req.body;
+        const { content } = req.body;
 
-        if (!body || Object.keys(body).length === 0 || typeof body.content !== 'string') {
+        if (typeof content !== 'string') {
             return res.status(400).json({ message: "Invalid memo content" });
         }
 
         await User.findByIdAndUpdate(
             req.user!._id,
-            { $push: { memo: body } }
+            { $set: { memo: content } }
         );
 
-        res.status(201).json({ 
-            message: "Memo created successfully"
+        res.status(200).json({ 
+            message: "Memo updated successfully"
         });
    } catch (error) {
         res.status(500).json({ 
@@ -54,6 +54,6 @@ const getMemo = async (req: Request, res: Response) => {
 
 export { 
     getUser,
-    createMemo,
+    updateMemo,
     getMemo,
 };
