@@ -36,7 +36,11 @@ const userSchema = new Schema(
         problems: [{
             type: Schema.Types.ObjectId,
             ref: 'Problem'
-        }]
+        }],
+
+        memo: {
+            type: String,
+        }
     },
 
     {
