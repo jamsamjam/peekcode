@@ -86,7 +86,7 @@ function App() {
 
   const saveMemo = async () => {
     try {
-      const response = await fetch(`/api/v1/users/user/memo`, {
+      const response = await fetch(`/api/v1/user/memo`, {
         method: 'PATCH',
         body: JSON.stringify({ content: tempMemo }),
         headers: {
@@ -190,7 +190,7 @@ function App() {
 
     const fetchMemo = async () => {
       try {
-        const response = await fetch(`/api/v1/users/user/memo`, {
+        const response = await fetch(`/api/v1/user/memo`, {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${jwt}`,
