@@ -87,7 +87,7 @@ function App() {
   const saveMemo = async () => {
     try {
       const response = await fetch(`/api/v1/user/memo`, {
-        method: 'PATCH',x
+        method: 'PATCH',
         body: JSON.stringify({ content: tempMemo }),
         headers: {
           'Authorization': `Bearer ${jwt!}`,
