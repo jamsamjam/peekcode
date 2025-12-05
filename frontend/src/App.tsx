@@ -437,7 +437,7 @@ function App() {
                           </p>
                         </div>
 
-                        <div className="d-flex gap-2">
+                        <div className="d-flex gap-2 my-2">
                           <p className="badge bg-primary">{problem.difficulty}</p>
                           <p className="badge bg-secondary">{problem.status}</p>
                         </div>
