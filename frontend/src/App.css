@@ -28,7 +28,7 @@
 
 .problems-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, 18rem);
+  grid-template-columns: repeat(auto-fill, 19rem);
   gap: 1rem;
 }
 
