@@ -28,8 +28,15 @@
 
 .problems-grid {
   display: grid;
-  grid-template-columns: repeat(4, 18rem);
+  grid-template-columns: repeat(auto-fill, 18rem);
   gap: 1rem;
-  width: calc(18rem * 4 + 1rem * 3);
-  margin: 0 auto;
+}
+
+.problem-card {
+  width: 19rem;
+  height: 20rem;
+  overflow-y: auto;
+}
+.problem-card:hover {
+  border-color: rgb(183, 227, 255);
 }

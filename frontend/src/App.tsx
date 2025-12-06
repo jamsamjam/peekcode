@@ -287,7 +287,7 @@ function App() {
 
   return (
     <div className="container-fluid d-flex justify-content-center mt-4">
-      <div className="col-12 col-lg-7"> 
+      <div className="col-12 col-lg-8"> 
         <div className="">
           {!jwt && (
             !hasAccount ? (
@@ -384,7 +384,7 @@ function App() {
               ) : (
                 <div className="problems-grid mt-4">
                   {problems.map(problem => (
-                    <div className="card" style={{ width: '18rem', height: '20rem', overflowY: 'auto' }} key={problem._id.toString()}>
+                    <div className="card problem-card" key={problem._id.toString()}>
                       <div className="card-body">
                         <div className="d-flex justify-content-between align-items-start">
                           <a href={problem.url!} style={{ textDecoration: 'none', color: 'inherit' }}>
