@@ -23,6 +23,12 @@ const Calendar = ({ data, loading, year }: CalendarProps) => {
     const currentYear = year || new Date().getFullYear();
     const totalCount = data.reduce((sum, activity) => sum + activity.count, 0);
     
+    console.log('📅 ActivityCalendar Component:');
+    console.log('year prop:', year);
+    console.log('currentYear:', currentYear);
+    console.log('data[0]:', data[0]);
+    console.log('totalCount:', totalCount);
+    
     return (
       <div>
         <ActivityCalendar 

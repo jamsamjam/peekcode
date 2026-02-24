@@ -186,6 +186,12 @@ function App() {
   const currentYear = new Date().getFullYear();
   const activityData = buildCalendarData(activityMap, currentYear)
 
+  console.log('🔍 CRITICAL DEBUG:');
+  console.log('currentYear:', currentYear);
+  console.log('activityData[0]:', activityData[0]);
+  console.log('activityData[activityData.length-1]:', activityData[activityData.length-1]);
+  console.log('Date test - new Date().getFullYear():', new Date().getFullYear());
+
   // https://infinitypaul.medium.com/reactjs-useeffect-usecallback-simplified-91e69fb0e7a3
   // useCallback ensures the function is only re-created if its dependencies changed
   const getProblems = useCallback(async () => {
