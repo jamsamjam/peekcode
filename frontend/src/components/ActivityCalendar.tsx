@@ -19,7 +19,33 @@ const Calendar = ({ data, loading }: CalendarProps) => {
       return <ActivityCalendar data={[]} theme={minimalTheme} maxLevel={5} loading />;
     }
 
-    return <ActivityCalendar data={data} theme={minimalTheme} maxLevel={5} />;
+    const currentYear = year || new Date().getFullYear();
+<<<<<<< HEAD
+    const totalCount = data.reduce((sum, activity) => sum + activity.count, 0);
+    
+    return (
+      <>
+        <ActivityCalendar 
+          data={data} 
+          theme={minimalTheme} 
+          maxLevel={5}
+        />
+        <p className="text-center mt-2" style={{ fontSize: '14px', color: '#666' }}>
+          {totalCount} activities in {currentYear}
+        </p>
+      </>
+    );
+=======
+    
+    return <ActivityCalendar 
+      data={data} 
+      theme={minimalTheme} 
+      maxLevel={5}
+      labels={{
+        totalCount: `{{count}} activities in ${currentYear}`
+      }}
+    />;
+>>>>>>> 70e9136620921520ae124879f31d9c02e20d1627
 }
 
 export default Calendar;
