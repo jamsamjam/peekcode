@@ -142,10 +142,17 @@ function App() {
     }
   }
 
+  const toLocalDateString = (date: Date) => {
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, "0");
+    const d = String(date.getDate()).padStart(2, "0");
+    return `${y}-${m}-${d}`;
+  };
+
   const activityMap: Record<string, { count: number; level: number }> = {};
 
   problems.forEach(p => {
-    const date = new Date(p.date).toISOString().split("T")[0];
+    const date = toLocalDateString(new Date(p.date));
     const level = difficultyToLevel(p.difficulty);
 
     if (!activityMap[date]) {
@@ -164,7 +171,7 @@ function App() {
     const d = new Date(start)
 
     while (d <= end) {
-      const ds = d.toISOString().split('T')[0]
+      const ds = toLocalDateString(d);
       result.push(
         activityMap[ds]
           ? { date: ds, count: activityMap[ds].count, level: activityMap[ds].level, }
@@ -376,6 +383,7 @@ function App() {
                 <ActivityCalendar
                   data={activityData}
                   loading={activityData.length === 0}
+                  year={currentYear}
                 />
               </div>
 

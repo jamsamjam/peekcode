@@ -21,15 +21,21 @@ const Calendar = ({ data, loading, year }: CalendarProps) => {
     }
 
     const currentYear = year || new Date().getFullYear();
+    const totalCount = data.reduce((sum, activity) => sum + activity.count, 0);
     
-    return <ActivityCalendar 
-      data={data} 
-      theme={minimalTheme} 
-      maxLevel={5}
-      labels={{
-        totalCount: `{{count}} activities in ${currentYear}`
-      }}
-    />;
+    return (
+      <div>
+        <ActivityCalendar 
+          data={data} 
+          theme={minimalTheme} 
+          maxLevel={5}
+          hideTotalCount={true}
+        />
+        <p className="text-center mt-2" style={{ fontSize: '14px', color: '#9ca3af' }}>
+          {totalCount} activities in {currentYear}
+        </p>
+      </div>
+    );
 }
 
 export default Calendar;
