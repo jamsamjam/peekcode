@@ -184,8 +184,18 @@ function App() {
   }
 
   const currentYear = new Date().getFullYear();
-  const activityData = buildCalendarData(activityMap, currentYear)
-
+  const [selectedYear, setSelectedYear] = useState(currentYear);
+  
+  const availableYears = Array.from(
+    new Set(problems.map(p => new Date(p.date).getFullYear()))
+  ).sort((a, b) => b - a); // Sort descending (newest first)
+  
+  if (!availableYears.includes(currentYear)) {
+    availableYears.unshift(currentYear);
+  }
+  
+  const activityData = buildCalendarData(activityMap, selectedYear)
+  
   // https://infinitypaul.medium.com/reactjs-useeffect-usecallback-simplified-91e69fb0e7a3
   // useCallback ensures the function is only re-created if its dependencies changed
   const getProblems = useCallback(async () => {
@@ -383,7 +393,9 @@ function App() {
                 <ActivityCalendar
                   data={activityData}
                   loading={activityData.length === 0}
-                  year={currentYear}
+                  year={selectedYear}
+                  availableYears={availableYears}
+                  onYearChange={setSelectedYear}
                 />
               </div>
 
