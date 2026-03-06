@@ -23,7 +23,6 @@ const Calendar = ({ data, loading, year, availableYears, onYearChange }: Calenda
     }
 
     const currentYear = year || new Date().getFullYear();
-    const totalCount = data.reduce((sum, activity) => sum + activity.count, 0);
     
     return (
       <div>
@@ -46,7 +45,6 @@ const Calendar = ({ data, loading, year, availableYears, onYearChange }: Calenda
           data={data} 
           theme={minimalTheme} 
           maxLevel={5}
-          hideTotalCount={true}
         />
       </div>
     );
