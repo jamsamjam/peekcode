@@ -9,9 +9,11 @@ interface CalendarProps {
   data: Array<{ date: string; count: number; level: number }>;
   loading?: boolean;
   year?: number;
+  availableYears?: number[];
+  onYearChange?: (year: number) => void;
 }
 
-const Calendar = ({ data, loading, year }: CalendarProps) => {
+const Calendar = ({ data, loading, year, availableYears, onYearChange }: CalendarProps) => {
     if (loading) {
       return <ActivityCalendar data={[]} theme={minimalTheme} maxLevel={5} loading />;
     }
@@ -25,15 +27,27 @@ const Calendar = ({ data, loading, year }: CalendarProps) => {
     
     return (
       <div>
+        <div className="d-flex align-items-center justify-content-between mb-2">
+          <div></div>
+          {availableYears && availableYears.length > 0 && onYearChange && (
+            <select 
+              className="form-select form-select-sm" 
+              style={{ width: 'auto', fontSize: '14px' }}
+              value={currentYear}
+              onChange={(e) => onYearChange(Number(e.target.value))}
+            >
+              {availableYears.map(y => (
+                <option key={y} value={y}>{y}</option>
+              ))}
+            </select>
+          )}
+        </div>
         <ActivityCalendar 
           data={data} 
           theme={minimalTheme} 
           maxLevel={5}
           hideTotalCount={true}
         />
-        <p className="text-center mt-2" style={{ fontSize: '14px', color: '#9ca3af' }}>
-          {totalCount} activities in {currentYear}
-        </p>
       </div>
     );
 }
